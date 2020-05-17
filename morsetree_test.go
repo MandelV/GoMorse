@@ -9,9 +9,9 @@ func isValid(test *testing.T, tree *Tree, code, letter string) {
 		test.Log(code, letter, "are Matching")
 	}
 }
-func TestEncode(test *testing.T) {
+func TestInit(test *testing.T) {
 
-	tree := MorseTree
+	tree := morseTree
 	isValid(test, tree, ".", "E")
 	isValid(test, tree, ".-", "A")
 	isValid(test, tree, ".-.", "R")
@@ -38,4 +38,16 @@ func TestEncode(test *testing.T) {
 	isValid(test, tree, "--.-", "Q")
 	isValid(test, tree, "--..", "Z")
 	isValid(test, tree, "---", "O")
+}
+
+func TestDecode(test *testing.T) {
+	//msg := "test"
+
+	morse := "-.. . -.-. --- -.. . -- --- .-. ... ."
+	plain :=  *Decode(&morse)
+	println("msg : ",)
+	if plain != "DECODEMORSE" {
+		test.Error(morse, plain, "Not match")
+	}
+
 }

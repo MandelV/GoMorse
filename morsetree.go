@@ -1,5 +1,7 @@
 package gomorse
 
+import "strings"
+
 type Node struct {
 	Dot    *Node
 	Dash   *Node
@@ -97,8 +99,40 @@ func initTree() *Tree {
 		insert("--..", "Z").
 		insert("---", "O")
 
+
 	return tree
 }
 
-// MorseTree Binary tree that represent the morse language
-var MorseTree *Tree = initTree()
+type Callback func(string) bool
+func (node *Node) Browse(letter string) *Node{
+	/*if node != nil {
+		n := node.Dot.Browse(letter)
+		if node.Letter == letter {
+			return n
+		}
+		node.Dash.Browse(letter)
+	}*/
+	return nil
+}
+
+//Encode message to morse
+func  Encode(message *string) (morse *string){
+
+
+
+
+	return nil
+}
+
+//Decode morse to message
+func Decode(morse *string) (message *string){
+	splited := strings.Split(*morse, " ")
+	msg := ""
+
+	for _, morseLetter := range splited {
+		msg += morseTree.search(morseLetter).Letter
+	}
+	return &msg
+}
+//MorseTree Binary tree that represent the morse language
+var morseTree *Tree = initTree()
