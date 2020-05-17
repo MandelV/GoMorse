@@ -4,7 +4,9 @@ import "testing"
 
 func isValid(test *testing.T, tree *Tree, code, letter string) {
 	if tree.search(code).Letter != letter {
-		test.Error(code, letter, "not equal")
+		test.Error(code, letter, "are not Match")
+	}else {
+		test.Log(code, letter, "are Matching")
 	}
 }
 func TestEncode(test *testing.T) {
