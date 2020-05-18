@@ -79,4 +79,4 @@ To get the code of a letter you have to browse through the binary tree if the pa
 
 Here a representation of the binary tree :
 
-[img](https://github.com/MandelV/GoMorse/doc/morse_tree.png)
+![img](doc/morse_tree.png)
