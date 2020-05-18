@@ -1,6 +1,8 @@
 package gomorse
 
-import "strings"
+import (
+	"strings"
+)
 
 type Node struct {
 	Dot    *Node
@@ -103,29 +105,30 @@ func initTree() *Tree {
 	return tree
 }
 
-type Callback func(string) bool
-func (node *Node) Browse(letter string) *Node{
-	/*if node != nil {
-		n := node.Dot.Browse(letter)
-		if node.Letter == letter {
-			return n
-		}
-		node.Dash.Browse(letter)
-	}*/
-	return nil
+// Browse enable to find the node that contains the given letter
+func (node *Node) Browse(letter string) (NodeFound *Node){
+	if node == nil {
+		return nil
+	}
+	 nDot, nDash := node.Dot.Browse(letter), node.Dash.Browse(letter)
+
+	 if nDot != nil && nDot.Letter == letter{
+		 return nDot
+	 }else if nDash != nil && nDash.Letter == letter{
+		 return nDash
+	 }
+	return node
 }
 
 //Encode message to morse
 func  Encode(message *string) (morse *string){
-
-
-
 
 	return nil
 }
 
 //Decode morse to message
 func Decode(morse *string) (message *string){
+
 	splited := strings.Split(*morse, " ")
 	msg := ""
 
