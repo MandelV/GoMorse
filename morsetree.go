@@ -8,14 +8,14 @@ import (
 //MorseTree Binary tree that represent the morse language
 var morseTree = initTree()
 
-//Node represent a letter in Tree and its child Dot, Dash
+//Node represent a letter in Tree
 type Node struct {
 	Dot    *Node
 	Dash   *Node
 	Letter string
 }
 
-//Tree represente the morse language
+//Tree represents the morse language
 type Tree struct {
 	Groot *Node
 }
@@ -152,6 +152,16 @@ func (node *Node) browse(letter string) (NodeFound *Node){
 	return node
 }
 
+//decodeWord will be used as go routine to translate morse word to plainWord
+func decodeWord(wg *sync.WaitGroup, out *string,  word string){
+	defer wg.Done()
+	w := ""
+	for _, code := range strings.Split(word, " ") {
+		letter, _ := morseTree.GetLetter(code)
+		w += letter
+	}
+	*out = w
+}
 //Encode message to morse
 func Encode(message *string) (morse *string, err error){
 
@@ -180,16 +190,6 @@ func Encode(message *string) (morse *string, err error){
 	return morse, nil
 }
 
-//decodeWord will be used as go routine to translate morse word to plainWord
-func decodeWord(wg *sync.WaitGroup, out *string,  word string){
-	defer wg.Done()
-	w := ""
-	for _, code := range strings.Split(word, " ") {
-		letter, _ := morseTree.GetLetter(code)
-		w += letter
-	}
-	*out = w
-}
 //Decode morse to message
 func Decode(morse *string) (message *string, err error) {
 	if morse == nil {
