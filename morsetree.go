@@ -105,6 +105,36 @@ func initTree() *Tree {
 	return tree
 }
 
+
+func (node *Node) path(path *[]string, letter string) bool {
+	if node == nil {
+		return false
+	}
+	if node.Dot.path(path, letter) {
+		*path = append(*path, ".")
+		return true
+	}else if node.Dash.path(path, letter){
+		*path = append(*path, "-")
+		return true
+	} else if node.Letter == letter{
+		return true
+	}else{
+		return false
+	}
+}
+
+func (tree *Tree)GetPath(letter string) (code string){
+	var path []string
+	morseTree.Groot.path(&path, letter)
+
+	return func() string{
+		for i, j := 0, len(path)-1; i < j; i, j = i+1, j-1{
+			path[i], path[j] = path[j], path[i]
+		}
+		code = strings.Join(path, "")
+		return code
+	}()
+}
 // Browse enable to find the node that contains the given letter
 func (node *Node) Browse(letter string) (NodeFound *Node){
 	if node == nil {
@@ -115,6 +145,7 @@ func (node *Node) Browse(letter string) (NodeFound *Node){
 	 if nDot != nil && nDot.Letter == letter{
 		 return nDot
 	 }else if nDash != nil && nDash.Letter == letter{
+
 		 return nDash
 	 }
 	return node
