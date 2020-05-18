@@ -19,22 +19,28 @@ or get the letter of a given code and code for given letter
 ```Go
 func Encode(message *string) (morse *string, err error)
 ```
-Encode take a pointer to the text you want to Encode and return
-a pointer of the morse and an err
-if the Encode is success err will be nil
-if the Encode is fail morse wil be nil and err will be return
+Encode take a pointer of the message you want to encode 
 
+```
+if Encode succeed : 
+return *morse, nil
+else :
+return nil, err
+```
 
 ### To Decode
 
 ```Go
 func Decode(morse *string) (message *string, err error)
 ```
-Decode take a pointer to the morse you want to Decode and return
-a pointer of the message and an err
-if the Decode is success err will be nil otherwise
-message wil be nil and err will be return
+Decode take a pointer of the morse you want to decode 
 
+```
+if Decode succeed : 
+return *message, nil
+else :
+return nil, err
+```
 
 ### Get Letter of given morse code
 
@@ -42,8 +48,12 @@ message wil be nil and err will be return
 func (tree *Tree) GetLetter(morse string) (letter string, err error)
 ```
 Get the letter against its morse code
-if GetLetter is success it return the letter and err'll be nil
-otherwise letter will be empty and err wont be nil
+```
+if GetLetter succeed : 
+return "", nil
+else :
+return nil, err
+```
 
 
 ### Get Code of given letter
@@ -52,9 +62,12 @@ otherwise letter will be empty and err wont be nil
 func (tree *Tree) GetCode(letter string) (code string, err error)
 ```
 Get the morse code against its letter
-if GetCode is success it return the code and err'll be nil
-otherwise code will be empty and err wont be nil
-
+```
+if GetCode succeed : 
+return "", nil
+else :
+return nil, err
+```
 
 ## Overview 
 
