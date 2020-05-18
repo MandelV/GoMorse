@@ -8,8 +8,6 @@ import (
 func isValid(t *testing.T, tree *Tree, code, letter string) {
 	if tree.search(code).Letter != letter {
 		t.Error(code, letter, "are not Match")
-	}else {
-		t.Log(code, letter, "are Matching")
 	}
 }
 //Test each code and its matching letter
