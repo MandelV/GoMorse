@@ -1,7 +1,6 @@
 package gomorse
 
 import (
-	"log"
 	"testing"
 )
 
@@ -43,25 +42,24 @@ func TestInit(t *testing.T) {
 	isValid(t, tree, "---", "O")
 }
 
-func TestDecode(t *testing.T) {
-	//msg := "DECODEMORSE"
-	morse := "-.. . -.-. --- -.. . -- --- .-. ... ."
-	plain :=  *Decode(&morse)
-	if plain != "DECODEMORSE" {
+func TestGetLetter(t *testing.T) {
+	//msg := "D"
+	morse := "-.."
+	if plain, err :=  GetLetter(morse); err != nil {
 		t.Error(morse, plain, "Not match")
 	}
 }
 
 func TestNode_Browse(t *testing.T) {
-	if node := morseTree.Groot.Browse("Q"); node == nil {
+	if node := morseTree.Groot.browse("Q"); node == nil {
 		t.Error("Node is nil")
 	}else if node.Letter != "Q" {
 		t.Error("Node not found")
 	}
 }
 
-func TestTree_GetPath(t *testing.T) {
-
-	log.Println("CODE : ",morseTree.GetPath("Y"))
-
+func TestTree_GetCode(t *testing.T) {
+	if code, err := morseTree.GetCode("Y"); err != nil {
+		t.Error("not found : ", code, " != ", "Y")
+	}
 }
