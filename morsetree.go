@@ -2,12 +2,9 @@ package gomorse
 
 import (
 	"errors"
-	"log"
 	"strings"
 	"sync"
 )
-//MorseTree Binary tree that represent the morse language
-var morseTree = initTree()
 
 //Node represent a letter in Tree
 type Node struct {
@@ -24,6 +21,8 @@ type Tree struct {
 //Init the morse tree
 func initTree() *Tree {
 	tree := &Tree{Groot: &Node{Letter: "ROOT"}}
+
+
 	tree.insert(".", "E").
 		insert(".-", "A").
 		insert(".-.", "R").
@@ -51,18 +50,6 @@ func initTree() *Tree {
 		insert("--..", "Z").
 		insert("---", "O")
 
-	tree.addPathNodes(".----")
-	tree.addPathNodes("..---")
-	tree.addPathNodes("...--")
-	tree.addPathNodes("....-")
-	tree.addPathNodes(".....")
-	tree.addPathNodes("-....")
-	tree.addPathNodes("--...")
-	tree.addPathNodes("---..")
-	tree.addPathNodes("----.")
-	tree.addPathNodes("-----")
-
-
 	//ADD NUMBERS
 	tree.insert(".----", "1")
 	tree.insert("..---", "2")
@@ -76,6 +63,8 @@ func initTree() *Tree {
 	tree.insert("-----", "0")
 
 
+
+
 	return tree
 }
 
@@ -84,29 +73,24 @@ func (node *Node) insert(code, letter string) {
 	if node == nil || len(code) != 1 {
 		return
 	}
-
 	if code == "." { //DOT
-
-		if node.Dot == nil && node.Letter != "" {
+		if node.Dot == nil {
 			node.Dot = &Node{Letter: letter}
-		} else if node.Letter == "" {
-
-			node.Letter = letter
-
 		}else {
 			node.Dot.insert(code, letter)
 		}
 	} else {// DASH
-		if node.Dash == nil && node.Letter != ""{
+		if node.Dash == nil {
 			node.Dash = &Node{Letter: letter}
-
-		} else if node.Letter == "" {
-			node.Letter = letter
-		}else {
-			log.Println("blabl DASH")
+		} else {
 			node.Dash.insert(code, letter)
 		}
 	}
+}
+
+// hasNext return double bool dot and dash that are true if child node is presents
+func (node *Node) hasNext() (dot bool, dash bool){
+	return node.Dot != nil, node.Dash != nil
 }
 
 //search a node with given morse code
@@ -131,7 +115,8 @@ func (tree *Tree) search(code string) *Node {
 	return currentNode
 }
 
-func (tree *Tree) addPathNodes(code string)  {
+//addPathNodes Creates each node from the racine to the last node following the code
+func (tree *Tree) addPathNodes(code string) *Node{
 
 	currentNode := tree.Groot
 	for _, partialCode := range code {
@@ -150,8 +135,10 @@ func (tree *Tree) addPathNodes(code string)  {
 			currentNode = currentNode.Dash
 		}
 	}
+	return currentNode
 
 }
+
 //insert a new node at the end of the path describe by the morse code
 func (tree *Tree) insert(code, letter string) *Tree {
 	if tree.Groot == nil {
@@ -160,7 +147,12 @@ func (tree *Tree) insert(code, letter string) *Tree {
 		if len(code) == 1 {
 			tree.Groot.insert(code, letter)
 		} else {
-			foundNode := tree.search(code)
+			foundNode := tree.addPathNodes(code)
+			//if the node has no child and no letter setted then we estimate that is the right node to put the letter in it
+			if dot, dash := foundNode.hasNext(); !dot && !dash && foundNode.Letter == ""{
+				foundNode.Letter = letter
+				return tree
+			}
 			foundNode.insert(code[len(code)-1:], letter)
 		}
 	}
@@ -209,11 +201,22 @@ func decodeWord(wg *sync.WaitGroup, out *string,  word string){
 	defer wg.Done()
 	w := ""
 	for _, code := range strings.Split(word, " ") {
-		letter, _ := morseTree.GetLetter(code)
+		letter, _ := GetLetter(code)
 		w += letter
 	}
 	*out = w
 }
+
+
+
+/* ========================================
+ *
+ *       EXPORTED ELEMENTS
+ *
+ * ========================================
+ */
+//MorseTree Binary tree that represent the morse language
+var MorseTree = initTree()
 //Encode message to morse
 func Encode(message *string) (morse *string, err error){
 
@@ -227,7 +230,7 @@ func Encode(message *string) (morse *string, err error){
 			code += "/"
 			continue
 		}
-		if mCode, er := morseTree.GetCode(l); er == nil {
+		if mCode, er := GetCode(l); er == nil {
 			code += mCode
 			code += " "
 		}else{
@@ -277,17 +280,17 @@ func Decode(morse *string) (message *string, err error) {
 }
 
 //GetLetter morse to message
-func (tree *Tree) GetLetter(morse string) (letter string, err error){
-	if node := tree.search(morse); node != nil {
+func GetLetter(morse string) (letter string, err error){
+	if node := MorseTree.search(morse); node != nil {
 		return node.Letter, nil
 	}
 	return "", errors.New("not found")
 }
 
 // GetCode get the code of the given letter
-func (tree *Tree) GetCode(letter string) (code string, err error){
+func GetCode(letter string) (code string, err error){
 	var path []string
-	morseTree.Groot.path(&path, letter)
+	MorseTree.Groot.path(&path, letter)
 
 	//Reverse the path
 	return func() (string, error){

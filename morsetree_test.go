@@ -12,7 +12,7 @@ func isValid(t *testing.T, tree *Tree, code, letter string) {
 }
 //Test each code and its matching letter
 func TestInit(t *testing.T) {
-	tree := morseTree
+	tree := MorseTree
 	//LETTERS
 	isValid(t, tree, ".", "E")
 	isValid(t, tree, ".-", "A")
@@ -58,13 +58,13 @@ func TestInit(t *testing.T) {
 func TestGetLetter(t *testing.T) {
 	//msg := "D"
 	morse := "-.."
-	if plain, err :=  morseTree.GetLetter(morse); err != nil {
+	if plain, err :=  GetLetter(morse); err != nil {
 		t.Error(morse, plain, "Not match")
 	}
 }
 
 func TestNode_Browse(t *testing.T) {
-	if node := morseTree.Groot.browse("Q"); node == nil {
+	if node := MorseTree.Groot.browse("Q"); node == nil {
 		t.Error("Node is nil")
 	}else if node.Letter != "Q" {
 		t.Error("Node not found")
@@ -72,7 +72,7 @@ func TestNode_Browse(t *testing.T) {
 }
 
 func TestTree_GetCode(t *testing.T) {
-	if code, err := morseTree.GetCode("Y"); err != nil {
+	if code, err := GetCode("Y"); err != nil {
 		t.Error("not found : ", code, " != ", "Y", err)
 	}
 }

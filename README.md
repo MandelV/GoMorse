@@ -45,7 +45,7 @@ return nil, err
 ### Get Letter of given morse code
 
 ```Go
-func (tree *Tree) GetLetter(morse string) (letter string, err error)
+func GetLetter(morse string) (letter string, err error)
 ```
 Get the letter against its morse code
 ```
@@ -59,7 +59,7 @@ return nil, err
 ### Get Code of given letter
 
 ```Go
-func (tree *Tree) GetCode(letter string) (code string, err error)
+func GetCode(letter string) (code string, err error)
 ```
 Get the morse code against its letter
 ```
