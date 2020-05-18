@@ -6,13 +6,14 @@ import (
 )
 
 func isValid(t *testing.T, tree *Tree, code, letter string) {
-	if tree.search(code).Letter != letter {
-		t.Error(code, letter, "are not Match")
+	if l := tree.search(code).Letter; l != letter {
+		t.Error(code, letter, l, "are not Match")
 	}
 }
 //Test each code and its matching letter
 func TestInit(t *testing.T) {
 	tree := morseTree
+	//LETTERS
 	isValid(t, tree, ".", "E")
 	isValid(t, tree, ".-", "A")
 	isValid(t, tree, ".-.", "R")
@@ -39,6 +40,19 @@ func TestInit(t *testing.T) {
 	isValid(t, tree, "--.-", "Q")
 	isValid(t, tree, "--..", "Z")
 	isValid(t, tree, "---", "O")
+
+	//NUMBERS
+	isValid(t, tree,".----", "1")
+	isValid(t, tree,"..---", "2")
+	isValid(t, tree,"...--", "3")
+	isValid(t, tree,"....-", "4")
+	isValid(t, tree,".....", "5")
+	isValid(t, tree,"-....", "6")
+	isValid(t, tree,"--...", "7")
+	isValid(t, tree,"---..", "8")
+	isValid(t, tree,"----.", "9")
+	isValid(t, tree,"-----", "0")
+
 }
 
 func TestGetLetter(t *testing.T) {
@@ -64,8 +78,8 @@ func TestTree_GetCode(t *testing.T) {
 }
 
 func TestEncode(t *testing.T) {
-	morse := "... .- .-.. ..- -/-.-. --- -- -- . -. -/-.-. .-/...- .- ..."
-	msg := "Salut comment ca vas"
+	morse := ".- -... -.-. -.. ./..-. --. .... .. .--- -.-/.-.. -- -. --- .--. --.- .-. ... - ..- ...- .-- -..- -.-- --../----- .---- ..--- ...-- ....- ..... -.... --... ---.. ----."
+	msg := "abcde fghijk lmnopqrstuvwxyz 0123456789"
 	if code, err := Encode(&msg); err != nil {
 		t.Error(err)
 	}else if *code != morse {
@@ -74,8 +88,8 @@ func TestEncode(t *testing.T) {
 }
 
 func TestDecode(t *testing.T) {
-	morse := "... .- .-.. ..- -/-.-. --- -- -- . -. -/-.-. .-/...- .- ..."
-	msg := "Salut comment ca vas"
+	morse := ".- -... -.-. -.. ./..-. --. .... .. .--- -.-/.-.. -- -. --- .--. --.- .-. ... - ..- ...- .-- -..- -.-- --../----- .---- ..--- ...-- ....- ..... -.... --... ---.. ----."
+	msg := "abcde fghijk lmnopqrstuvwxyz 0123456789"
 
 	if message, err := Decode(&morse); err != nil {
 		t.Error(err)
