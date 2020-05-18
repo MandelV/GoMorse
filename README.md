@@ -1,5 +1,5 @@
 # GoMorse
-![Go](https://github.com/MandelV/GoMorse/workflows/Go/badge.svg?branch=master)
+![Go](https://github.com/MandelV/GoMorse/workflows/Go/badge.svg)
 
 Go library that enable to Encode/Decode Morse
 ## Installation
