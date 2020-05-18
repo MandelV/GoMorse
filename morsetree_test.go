@@ -1,6 +1,7 @@
 package gomorse
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -45,7 +46,7 @@ func TestInit(t *testing.T) {
 func TestGetLetter(t *testing.T) {
 	//msg := "D"
 	morse := "-.."
-	if plain, err :=  GetLetter(morse); err != nil {
+	if plain, err :=  morseTree.GetLetter(morse); err != nil {
 		t.Error(morse, plain, "Not match")
 	}
 }
@@ -60,6 +61,27 @@ func TestNode_Browse(t *testing.T) {
 
 func TestTree_GetCode(t *testing.T) {
 	if code, err := morseTree.GetCode("Y"); err != nil {
-		t.Error("not found : ", code, " != ", "Y")
+		t.Error("not found : ", code, " != ", "Y", err)
+	}
+}
+
+func TestEncode(t *testing.T) {
+	morse := "... .- .-.. ..- -/-.-. --- -- -- . -. -/-.-. .-/...- .- ..."
+	msg := "Salut comment ca vas"
+	if code, err := Encode(&msg); err != nil {
+		t.Error(err)
+	}else if *code != morse {
+		t.Error("\""+*code+"\"","!=", "\""+morse+"\"", "code does not match")
+	}
+}
+
+func TestDecode(t *testing.T) {
+	morse := "... .- .-.. ..- -/-.-. --- -- -- . -. -/-.-. .-/...- .- ..."
+	msg := "Salut comment ca vas"
+
+	if message, err := Decode(&morse); err != nil {
+		t.Error(err)
+	}else if *message != strings.ToUpper(msg) {
+		t.Error("\"" +*message + "\"", "!=", "\""+strings.ToUpper(msg)+"\"", "msg does not match")
 	}
 }

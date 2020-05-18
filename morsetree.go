@@ -3,10 +3,14 @@ package gomorse
 import (
 	"errors"
 	"strings"
+	"sync"
 )
 //MorseTree Binary tree that represent the morse language
 var morseTree *Tree = initTree()
-
+type Word struct {
+	index int
+	word string
+}
 type Node struct {
 	Dot    *Node
 	Dash   *Node
@@ -148,17 +152,77 @@ func (node *Node) browse(letter string) (NodeFound *Node){
 }
 
 //Encode message to morse
-func  Encode(message *string) (morse *string, err error){
+func Encode(message *string) (morse *string, err error){
 
-	return nil, nil
+	*message = strings.ToUpper(*message)
+	code := ""
+	morse = &code
+
+	for _, letter := range *message{
+		l := string(letter)
+		if l == " " {
+			code += "/"
+			continue
+		}
+		if mCode, er := morseTree.GetCode(l); er == nil {
+			code += mCode
+			code += " "
+		}else{
+			return nil, er
+		}
+	}
+	//Just beautify the code
+	code = strings.Replace(code, " /", "/", len(code))
+	if code[len(code)-1:] == " "{
+		code = code[:len(code)-1]
+	}
+	return morse, nil
+}
+
+//decodeWord will be use as go routine to translate morse word to plainWord
+func decodeWord(wg *sync.WaitGroup, index int , out *Word,  word string){
+	defer wg.Done()
+	w := ""
+	for _, code := range strings.Split(word, " ") {
+		letter, _ := morseTree.GetLetter(code)
+		w += letter
+	}
+	*out = Word{index: index, word: w}
 }
 //Decode morse to message
 func Decode(morse *string) (message *string, err error) {
-	return nil, nil
+	if morse == nil {
+		return nil, errors.New("morse is nil")
+	}
+	msg := ""
+	message = &msg
+
+	wordsStr := strings.Split(*morse, "/")
+
+	out := make([]Word, len(wordsStr))
+	wg := new(sync.WaitGroup)
+
+	//prepare go routine to work on each word of the morse code
+	for i, word := range wordsStr{
+		wg.Add(1)
+		go decodeWord(wg, i, &out[i], word)
+	}
+	wg.Wait()
+	for _, v := range out {
+		msg += v.word + " "
+	}
+	if (*morse)[len(*morse)-1:] == " "{
+		*morse = (*morse)[:len(*morse)-1]
+	}
+	if msg[len(msg)-1:] == " "{
+		msg = msg[:len(msg)-1]
+	}
+	return message, nil
 }
+
 //GetLetter morse to message
-func GetLetter(morse string) (letter string, err error){
-	if node := morseTree.search(morse); node != nil {
+func (tree *Tree) GetLetter(morse string) (letter string, err error){
+	if node := tree.search(morse); node != nil {
 		return node.Letter, nil
 	}
 	return "", errors.New("not found")
@@ -176,7 +240,7 @@ func (tree *Tree) GetCode(letter string) (code string, err error){
 		}
 		code = strings.Join(path, "")
 		if code == "" {
-			return "", errors.New("code not found")
+			return "", errors.New("code not found for : " + "\"" + letter + "\"")
 		}else {
 			return code, nil
 		}
