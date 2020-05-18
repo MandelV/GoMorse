@@ -1,6 +1,8 @@
 package gomorse
 
-import "testing"
+import (
+	"testing"
+)
 
 func isValid(test *testing.T, tree *Tree, code, letter string) {
 	if tree.search(code).Letter != letter {
@@ -9,8 +11,8 @@ func isValid(test *testing.T, tree *Tree, code, letter string) {
 		test.Log(code, letter, "are Matching")
 	}
 }
+//Test each code and its matching letter
 func TestInit(test *testing.T) {
-
 	tree := morseTree
 	isValid(test, tree, ".", "E")
 	isValid(test, tree, ".-", "A")
@@ -41,13 +43,18 @@ func TestInit(test *testing.T) {
 }
 
 func TestDecode(test *testing.T) {
-	//msg := "test"
-
+	//msg := "DECODEMORSE"
 	morse := "-.. . -.-. --- -.. . -- --- .-. ... ."
 	plain :=  *Decode(&morse)
-	println("msg : ",)
 	if plain != "DECODEMORSE" {
 		test.Error(morse, plain, "Not match")
 	}
+}
 
+func TestNode_Browse(test *testing.T) {
+	if node := morseTree.Groot.Browse("E"); node == nil {
+		test.Error("Node is nil")
+	}else if node.Letter != "E" {
+		test.Error("Node not found")
+	}
 }
