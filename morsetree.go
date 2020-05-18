@@ -6,20 +6,20 @@ import (
 	"sync"
 )
 //MorseTree Binary tree that represent the morse language
-var morseTree *Tree = initTree()
-type Word struct {
-	index int
-	word string
-}
+var morseTree = initTree()
+
+//Node represent a letter in Tree and its child Dot, Dash
 type Node struct {
 	Dot    *Node
 	Dash   *Node
 	Letter string
 }
 
+//Tree represente the morse language
 type Tree struct {
 	Groot *Node
 }
+
 //Init the morse tree
 func initTree() *Tree {
 	tree := &Tree{Groot: &Node{Letter: "ROOT"}}
@@ -54,6 +54,7 @@ func initTree() *Tree {
 
 	return tree
 }
+
 //insert a new node at the parent node depending on whether code is dot (.) or dash (-)
 func (node *Node) insert(code, letter string) {
 	if node == nil || len(code) != 1 {
@@ -179,15 +180,15 @@ func Encode(message *string) (morse *string, err error){
 	return morse, nil
 }
 
-//decodeWord will be use as go routine to translate morse word to plainWord
-func decodeWord(wg *sync.WaitGroup, index int , out *Word,  word string){
+//decodeWord will be used as go routine to translate morse word to plainWord
+func decodeWord(wg *sync.WaitGroup, out *string,  word string){
 	defer wg.Done()
 	w := ""
 	for _, code := range strings.Split(word, " ") {
 		letter, _ := morseTree.GetLetter(code)
 		w += letter
 	}
-	*out = Word{index: index, word: w}
+	*out = w
 }
 //Decode morse to message
 func Decode(morse *string) (message *string, err error) {
@@ -199,18 +200,21 @@ func Decode(morse *string) (message *string, err error) {
 
 	wordsStr := strings.Split(*morse, "/")
 
-	out := make([]Word, len(wordsStr))
+	out := make([]string, len(wordsStr))
 	wg := new(sync.WaitGroup)
 
 	//prepare go routine to work on each word of the morse code
 	for i, word := range wordsStr{
 		wg.Add(1)
-		go decodeWord(wg, i, &out[i], word)
+		go decodeWord(wg, &out[i], word)
 	}
+	//Waiting each go routine
 	wg.Wait()
+	//Create the final message
 	for _, v := range out {
-		msg += v.word + " "
+		msg += v + " "
 	}
+	//Beautify the final message
 	if (*morse)[len(*morse)-1:] == " "{
 		*morse = (*morse)[:len(*morse)-1]
 	}
