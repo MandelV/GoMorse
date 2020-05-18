@@ -2,6 +2,7 @@ package gomorse
 
 import (
 	"errors"
+	"log"
 	"strings"
 	"sync"
 )
@@ -23,7 +24,6 @@ type Tree struct {
 //Init the morse tree
 func initTree() *Tree {
 	tree := &Tree{Groot: &Node{Letter: "ROOT"}}
-
 	tree.insert(".", "E").
 		insert(".-", "A").
 		insert(".-.", "R").
@@ -51,6 +51,30 @@ func initTree() *Tree {
 		insert("--..", "Z").
 		insert("---", "O")
 
+	tree.addPathNodes(".----")
+	tree.addPathNodes("..---")
+	tree.addPathNodes("...--")
+	tree.addPathNodes("....-")
+	tree.addPathNodes(".....")
+	tree.addPathNodes("-....")
+	tree.addPathNodes("--...")
+	tree.addPathNodes("---..")
+	tree.addPathNodes("----.")
+	tree.addPathNodes("-----")
+
+
+	//ADD NUMBERS
+	tree.insert(".----", "1")
+	tree.insert("..---", "2")
+	tree.insert("...--", "3")
+	tree.insert("....-", "4")
+	tree.insert(".....", "5")
+	tree.insert("-....", "6")
+	tree.insert("--...", "7")
+	tree.insert("---..", "8")
+	tree.insert("----.", "9")
+	tree.insert("-----", "0")
+
 
 	return tree
 }
@@ -60,16 +84,26 @@ func (node *Node) insert(code, letter string) {
 	if node == nil || len(code) != 1 {
 		return
 	}
-	if code == "." {
-		if node.Dot == nil {
+
+	if code == "." { //DOT
+
+		if node.Dot == nil && node.Letter != "" {
 			node.Dot = &Node{Letter: letter}
-		} else {
+		} else if node.Letter == "" {
+
+			node.Letter = letter
+
+		}else {
 			node.Dot.insert(code, letter)
 		}
-	} else {
-		if node.Dash == nil {
+	} else {// DASH
+		if node.Dash == nil && node.Letter != ""{
 			node.Dash = &Node{Letter: letter}
-		} else {
+
+		} else if node.Letter == "" {
+			node.Letter = letter
+		}else {
+			log.Println("blabl DASH")
 			node.Dash.insert(code, letter)
 		}
 	}
@@ -80,7 +114,6 @@ func (tree *Tree) search(code string) *Node {
 	currentNode := tree.Groot
 	for _, partialCode := range code {
 		pc := string(partialCode)
-
 		if pc == "." {
 			if currentNode.Dot == nil {
 				continue
@@ -98,6 +131,27 @@ func (tree *Tree) search(code string) *Node {
 	return currentNode
 }
 
+func (tree *Tree) addPathNodes(code string)  {
+
+	currentNode := tree.Groot
+	for _, partialCode := range code {
+		pc := string(partialCode)
+
+		if pc == "." {
+			if currentNode.Dot == nil {
+				currentNode.Dot = &Node{Letter: "", Dash: nil, Dot: nil}
+			}
+			currentNode = currentNode.Dot
+
+		} else {
+			if currentNode.Dash == nil {
+				currentNode.Dash = &Node{Letter: "", Dash: nil, Dot: nil}
+			}
+			currentNode = currentNode.Dash
+		}
+	}
+
+}
 //insert a new node at the end of the path describe by the morse code
 func (tree *Tree) insert(code, letter string) *Tree {
 	if tree.Groot == nil {
@@ -106,12 +160,10 @@ func (tree *Tree) insert(code, letter string) *Tree {
 		if len(code) == 1 {
 			tree.Groot.insert(code, letter)
 		} else {
-			findedNode := tree.search(code)
-			findedNode.insert(code[len(code)-1:], letter)
+			foundNode := tree.search(code)
+			foundNode.insert(code[len(code)-1:], letter)
 		}
-
 	}
-
 	return tree
 }
 
