@@ -80,3 +80,7 @@ To get the code of a letter you have to browse through the binary tree if the pa
 Here a representation of the binary tree :
 
 ![img](doc/morse_tree.png)
+
+## TO-DO
+
+- [Add the ability to manage empty nodes in the tree](https://github.com/MandelV/GoMorse/issues/1)
