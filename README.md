@@ -71,7 +71,7 @@ return nil, err
 
 ## Overview 
 
-Internally the package represente the morse langage into Binary Tree :
+Internally the package contains the morse language as Binary Tree :
 ```Go
 //Tree represents the morse language
 type Tree struct {
