@@ -4,6 +4,10 @@ import (
 	"strings"
 	"testing"
 )
+const (
+	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	morseGeneric = ".- -... -.-. -.. . ..-. --. .... .. .--- -.- .-.. -- -. --- .--. --.- .-. ... - ..- ...- .-- -..- -.-- --.. ----- .---- ..--- ...-- ....- ..... -.... --... ---.. ----.."
+)
 
 func isValid(t *testing.T, tree *Tree, code, letter string) {
 	if l := tree.search(code).Letter; l != letter {
@@ -56,24 +60,32 @@ func TestInit(t *testing.T) {
 }
 
 func TestGetLetter(t *testing.T) {
-	//msg := "D"
-	morse := "-.."
-	if plain, err :=  GetLetter(morse); err != nil {
-		t.Error(morse, plain, "Not match")
+	codes := strings.Split(morseGeneric, " ")
+	for _, code := range codes{
+		if _, err :=  GetLetter(code); err != nil {
+			t.Error(err)
+		}
 	}
 }
 
 func TestNode_Browse(t *testing.T) {
-	if node := MorseTree.Groot.browse("Q"); node == nil {
-		t.Error("Node is nil")
-	}else if node.Letter != "Q" {
-		t.Error("Node not found")
+
+	for _, a := range alphabet{
+		alpha := string(a)
+		if node := MorseTree.Groot.browse(alpha); node == nil {
+			t.Error("Node is nil")
+		}else if node.Letter != alpha {
+			t.Error("Node not found")
+		}
 	}
 }
 
 func TestTree_GetCode(t *testing.T) {
-	if code, err := GetCode("Y"); err != nil {
-		t.Error("not found : ", code, " != ", "Y", err)
+	for _, a := range alphabet{
+		alpha := string(a)
+		if code, err := GetCode(alpha); err != nil {
+			t.Error("not found : ", code, " != ", alpha, err)
+		}
 	}
 }
 
