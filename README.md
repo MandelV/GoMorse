@@ -15,7 +15,6 @@ There are some methodes to Encode message to morse and Decode morse to plaintext
 or get the letter of a given code and code for given letter
 
 ### To Encode
-
 ```Go
 func Encode(message *string) (morse *string, err error)
 ```
